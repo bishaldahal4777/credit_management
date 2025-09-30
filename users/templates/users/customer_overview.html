@@ -1,9 +1,16 @@
-<form method="get">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+
+   <form method="get">
     <input type="text" name="q" placeholder="Search customer" value="{{ search_query }}">
     <button type="submit">Search</button>
-</form>
+    </form>
 
-<table border="1">
+    <table border="1">
     <tr>
         <th>Customer</th>
         <th>Balance</th>
@@ -19,3 +26,5 @@
     </tr>
     {% endfor %}
 </table>
+</body>
+</html>
