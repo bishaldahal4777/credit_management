@@ -2,6 +2,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from credits.models import Credit, Payment
 from django.db.models import Sum
+from customers.models import Customer
+from credits.utils import customer_balance
 from django.contrib.auth.decorators import login_required
 
 def register(request):
@@ -31,3 +33,9 @@ def dashboard(request):
         'total_due': total_due,
     }
     return render(request, 'users/dashboard.html', context)
+
+@login_required
+def customer_overview(request):
+    customers = Customer.objects.filter(shop=request.user)
+    customer_balances = {customer: customer_balance(customer) for customer in customers}
+    return render(request, 'users/customer_overview.html', {'customer_balances': customer_balances})
