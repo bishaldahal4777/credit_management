@@ -37,3 +37,9 @@ def add_payment(request):
     else:
         form = PaymentForm()
     return render(request, 'credits/add_payment.html', {'form': form})
+
+@login_required
+def payment_list(request):
+    # Show payments for credits belonging to the logged-in shop
+    payments = Payment.objects.filter(credit__customer__shop=request.user).order_by('-payment_date')
+    return render(request, 'credits/payment_list.html', {'payments': payments})
