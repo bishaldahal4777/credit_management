@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .forms import CreditForm
 from django.contrib.auth.decorators import login_required
 from .models import Credit
+from .forms import CreditForm, PaymentForm
+
 
 @login_required
 def add_credit(request):
@@ -19,3 +21,19 @@ def credit_list(request):
     # Show only credits for customers belonging to the logged-in shop
     credits = Credit.objects.filter(customer__shop=request.user).order_by('-date')
     return render(request, 'credits/credit_list.html', {'credits': credits})
+
+@login_required
+def add_payment(request):
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment = form.save()
+            # Check if credit is fully paid
+            total_paid = sum(p.amount_paid for p in payment.credit.payment_set.all())
+            if total_paid >= payment.credit.amount:
+                payment.credit.is_paid = True
+                payment.credit.save()
+            return redirect('payment_list')
+    else:
+        form = PaymentForm()
+    return render(request, 'credits/add_payment.html', {'form': form})
