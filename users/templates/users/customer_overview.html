@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Customer Overview</title>
-</head>
-<body>
-    <h2>Customer Balances</h2>
-    <table border="1">
-        <tr>
-            <th>Customer</th>
-            <th>Balance</th>
-        </tr>
-        {% for customer, balance in customer_balances.items %}
-        <tr>
-            <td>{{ customer.name }}</td>
-            <td>{{ balance }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="2">No customers yet.</td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
+<form method="get">
+    <input type="text" name="q" placeholder="Search customer" value="{{ search_query }}">
+    <button type="submit">Search</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>Customer</th>
+        <th>Balance</th>
+    </tr>
+    {% for data in customer_data %}
+    <tr {% if data.overdue %} style="background-color: #f8d7da;" {% endif %}>
+        <td>{{ data.customer.name }}</td>
+        <td>{{ data.balance }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No customers found.</td>
+    </tr>
+    {% endfor %}
+</table>

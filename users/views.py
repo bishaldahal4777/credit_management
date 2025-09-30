@@ -1,3 +1,4 @@
+from time import timezone
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from credits.models import Credit, Payment
@@ -36,6 +37,17 @@ def dashboard(request):
 
 @login_required
 def customer_overview(request):
-    customers = Customer.objects.filter(shop=request.user)
-    customer_balances = {customer: customer_balance(customer) for customer in customers}
-    return render(request, 'users/customer_overview.html', {'customer_balances': customer_balances})
+    search_query = request.GET.get('q', '')  # get search term from URL
+    if search_query:
+        customers = Customer.objects.filter(shop=request.user, name__icontains=search_query)
+    else:
+        customers = Customer.objects.filter(shop=request.user)
+
+    customer_data = []
+    for customer in customers:
+        balance = customer_balance(customer)
+        credits = customer.credit_set.all()
+        overdue = any([credit.due_date < timezone.now().date() and not credit.is_paid for credit in credits])
+        customer_data.append({'customer': customer, 'balance': balance, 'overdue': overdue})
+    
+    return render(request, 'users/customer_overview.html', {'customer_data': customer_data, 'search_query': search_query})
