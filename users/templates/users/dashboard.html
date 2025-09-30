@@ -1,22 +1,97 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
-    <h2>Shop Dashboard</h2>
-    <p>Total Credit: {{ total_credit }}</p>
-    <p>Total Paid: {{ total_paid }}</p>
-    <p>Total Due: {{ total_due }}</p>
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
 
-    <h3>Quick Links:</h3>
-    <ul>
-        <li><a href="{% url 'credit_list' %}">View Credits</a></li>
-        <li><a href="{% url 'add_credit' %}">Add Credit</a></li>
-        <li><a href="{% url 'payment_list' %}">View Payments</a></li>
-        <li><a href="{% url 'add_payment' %}">Add Payment</a></li>
-        <li><a href="{% url 'customer_overview' %}">Customer Overview</a></li>
+{% block content %}
+<div class="container-fluid mt-4">
 
-    </ul>
-</body>
-</html>
+    <h2 class="mb-4">Shop Dashboard</h2>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Credit</h5>
+                    <p class="card-text fs-4">{{ total_credit }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Paid</h5>
+                    <p class="card-text fs-4">{{ total_paid }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Due</h5>
+                    <p class="card-text fs-4">{{ total_due }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">Credits vs Payments</div>
+                <div class="card-body">
+                    <canvas id="creditsPaymentsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">Due vs Paid</div>
+                <div class="card-body">
+                    <canvas id="dueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Credits vs Payments (Bar Chart)
+    const ctx1 = document.getElementById('creditsPaymentsChart').getContext('2d');
+    const creditsPaymentsChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Total Credit', 'Total Paid'],
+            datasets: [{
+                label: 'Amount (NPR)',
+                data: [{{ total_credit }}, {{ total_paid }}],
+                backgroundColor: ['#0d6efd', '#198754']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Due vs Paid (Doughnut Chart)
+    const ctx2 = document.getElementById('dueChart').getContext('2d');
+    const dueChart = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Paid', 'Due'],
+            datasets: [{
+                label: 'Amount (NPR)',
+                data: [{{ total_paid }}, {{ total_due }}],
+                backgroundColor: ['#198754', '#dc3545']
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">sajilobyte</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'dashboard' %}">{{ user.username }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="d-flex">
+        {% if user.is_authenticated %}
+        <!-- Sidebar -->
+        <div class="bg-light border-end" id="sidebar" style="width: 220px; min-height: 100vh;">
+            <div class="list-group list-group-flush">
+                <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action">Dashboard</a>
+                <a href="{% url 'credit_list' %}" class="list-group-item list-group-item-action">View Credits</a>
+                <a href="{% url 'add_credit' %}" class="list-group-item list-group-item-action">Add Credit</a>
+                <a href="{% url 'payment_list' %}" class="list-group-item list-group-item-action">View Payments</a>
+                <a href="{% url 'add_payment' %}" class="list-group-item list-group-item-action">Add Payment</a>
+                <a href="{% url 'customer_overview' %}" class="list-group-item list-group-item-action">Customer Overview</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Page Content -->
+        <div class="flex-grow-1 p-4">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
