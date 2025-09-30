@@ -11,11 +11,14 @@ def add_credit(request):
     if request.method == 'POST':
         form = CreditForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('credit_list')  # we will create this view next
+            credit = form.save(commit=False)
+            credit.user = request.user  # auto-assign logged-in user
+            credit.save()
+            return redirect('credit_list')  # list all credits
     else:
         form = CreditForm()
     return render(request, 'credits/add_credit.html', {'form': form})
+
 
 @login_required
 def credit_list(request):

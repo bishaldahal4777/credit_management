@@ -1,14 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Credit</title>
-</head>
-<body>
-    <h2>Add Credit Transaction</h2>
-    <form method="post">
+{% extends 'base.html' %}
+{% block title %}Add Credit{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Add Credit Transaction</h2>
+    <form method="post" class="row g-3">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Add Credit</button>
+        <button type="submit" class="btn btn-primary">Add Credit</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}
