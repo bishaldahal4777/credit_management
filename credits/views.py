@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CreditForm
 from django.contrib.auth.decorators import login_required
-from .models import Credit
+from .models import Credit, Payment
 from .forms import CreditForm, PaymentForm
 
 

@@ -4,7 +4,17 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h2>Welcome to your Shop Dashboard</h2>
-    <p>You are logged in!</p>
+    <h2>Shop Dashboard</h2>
+    <p>Total Credit: {{ total_credit }}</p>
+    <p>Total Paid: {{ total_paid }}</p>
+    <p>Total Due: {{ total_due }}</p>
+
+    <h3>Quick Links:</h3>
+    <ul>
+        <li><a href="{% url 'credit_list' %}">View Credits</a></li>
+        <li><a href="{% url 'add_credit' %}">Add Credit</a></li>
+        <li><a href="{% url 'payment_list' %}">View Payments</a></li>
+        <li><a href="{% url 'add_payment' %}">Add Payment</a></li>
+    </ul>
 </body>
 </html>
