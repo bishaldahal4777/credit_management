@@ -6,29 +6,35 @@
 <body>
     <h2>All Credit Transactions</h2>
     <a href="{% url 'add_credit' %}">Add New Credit</a>
-    <table border="1">
-        <tr>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Description</th>
-            <th>Date</th>
-            <th>Due Date</th>
-            <th>Paid</th>
-        </tr>
-        {% for credit in credits %}
-        <tr>
-            <td>{{ credit.customer.name }}</td>
-            <td>{{ credit.amount }}</td>
-            <td>{{ credit.description }}</td>
-            <td>{{ credit.date }}</td>
-            <td>{{ credit.due_date }}</td>
-            <td>{{ credit.is_paid }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="6">No credit transactions yet.</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <form method="get">
+    <input type="text" name="q" placeholder="Search by customer" value="{{ search_query }}">
+    <button type="submit">Search</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>Customer</th>
+        <th>Amount</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th>Due Date</th>
+        <th>Paid</th>
+    </tr>
+    {% for credit in credits %}
+    <tr {% if not credit.is_paid and credit.due_date < today %} style="background-color: #f8d7da;" {% endif %}>
+        <td>{{ credit.customer.name }}</td>
+        <td>{{ credit.amount }}</td>
+        <td>{{ credit.description }}</td>
+        <td>{{ credit.date }}</td>
+        <td>{{ credit.due_date }}</td>
+        <td>{{ credit.is_paid }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6">No credit transactions found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
 </body>
 </html>

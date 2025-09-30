@@ -3,7 +3,8 @@ from .forms import CreditForm
 from django.contrib.auth.decorators import login_required
 from .models import Credit, Payment
 from .forms import CreditForm, PaymentForm
-
+from django.db.models import Q
+from django.utils import timezone
 
 @login_required
 def add_credit(request):
@@ -18,9 +19,21 @@ def add_credit(request):
 
 @login_required
 def credit_list(request):
-    # Show only credits for customers belonging to the logged-in shop
-    credits = Credit.objects.filter(customer__shop=request.user).order_by('-date')
-    return render(request, 'credits/credit_list.html', {'credits': credits})
+    search_query = request.GET.get('q', '')  # search term
+    if search_query:
+        credits = Credit.objects.filter(
+            Q(customer__name__icontains=search_query),
+            customer__shop=request.user
+        ).order_by('-date')
+    else:
+        credits = Credit.objects.filter(customer__shop=request.user).order_by('-date')
+
+    today = timezone.now().date()  # current date
+    return render(request, 'credits/credit_list.html', {
+        'credits': credits,
+        'search_query': search_query,
+        'today': today,   # pass today to template
+    })
 
 @login_required
 def add_payment(request):
@@ -43,3 +56,4 @@ def payment_list(request):
     # Show payments for credits belonging to the logged-in shop
     payments = Payment.objects.filter(credit__customer__shop=request.user).order_by('-payment_date')
     return render(request, 'credits/payment_list.html', {'payments': payments})
+
